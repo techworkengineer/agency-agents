@@ -10,6 +10,7 @@
 
 set -euo pipefail
 
+# Keep in sync with AGENT_DIRS in scripts/convert.sh
 AGENT_DIRS=(
   academic
   design
@@ -17,6 +18,7 @@ AGENT_DIRS=(
   game-development
   marketing
   paid-media
+  sales
   product
   project-management
   sales
@@ -35,6 +37,12 @@ warnings=0
 
 lint_file() {
   local file="$1"
+
+  if [[ ! -f "$file" ]]; then
+    echo "ERROR $file: not a file or does not exist"
+    errors=$((errors + 1))
+    return
+  fi
 
   # 1. Check frontmatter delimiters
   local first_line
@@ -74,8 +82,10 @@ lint_file() {
     fi
   done
 
-  # 4. Check file has meaningful content
-  if [[ $(echo "$body" | wc -w) -lt 50 ]]; then
+  # 4. Check file has meaningful content (awk strips wc's leading whitespace on macOS/BSD)
+  local word_count
+  word_count=$(echo "$body" | wc -w | awk '{print $1}')
+  if [[ "${word_count:-0}" -lt 50 ]]; then
     echo "WARN  $file: body seems very short (< 50 words)"
     warnings=$((warnings + 1))
   fi
