@@ -1,6 +1,6 @@
 # Gemini CLI Integration
 
-Packages all 61 Agency agents as a Gemini CLI extension. The extension
+Packages all Agency agents as a Gemini CLI extension. The extension
 installs to `~/.gemini/extensions/agency-agents/`.
 
 ## Install
